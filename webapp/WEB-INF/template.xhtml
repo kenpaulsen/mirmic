@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ns xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsft="http://jsftemplating.java.net/jsft"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en">
+
+<ui:composition>
+<jsft:event type="initPage">
+    hasDetail = false;
+    if (false &amp;&amp; !request.secure &amp;&amp; !request.serverName.equals("localhost")) {
+        jsft.redirect(request.requestURL.toString().replaceFirst("^http:", "https:"));
+    } else {
+        if (sessionScope.mirDark == null) {
+            sessionScope.mirDark = true;
+        }
+        if (param.info != null) {
+            hasDetail = (param.infoDetail != null);
+            tripUtil.infoMsg(param.info, param.infoDetail == null ? "" : param.infoDetail);
+        }
+        if (param.warn != null) {
+            hasDetail = hasDetail || (param.warnDetail != null);
+            tripUtil.warnMsg(param.warn, param.warnDetail == null ? "" : param.warnDetail);
+        }
+        if (param.error != null) {
+            hasDetail = hasDetail || (param.errorDetail != null);
+            tripUtil.errorMsg(param.error, param.errorDetail == null ? "" : param.errorDetail);
+        }
+    }
+</jsft:event>
+<jsft:event id="mirAuth">
+/**
+ *  sessionScope.mirAUser          // Only set for admin users (so they can assume roles and get back) -- see: ../account/login.xhtml
+ *  sessionScope.mirUser           // Active user (will be set if admin becomes somone)
+ *
+ *               reqMirId          // Per page: A specific userId that can access this page
+ *     viewScope.reqMirRole        // Per page: Required role to view the page (note: viewScope)
+ *
+ *  sessionScope.mirAfterLoginURL  // Auto-set if redirected b/c not logged in: URL login page will redirect to
+ */
+// FIXME: people is not available for mir
+    if ((viewScope.reqMirRole != null) &amp;&amp; !sessionScope.mirUser.isType(viewScope.reqMirRole)) {
+        // Missing req reqMirRole
+        if ((reqMirId == null) || !pass.canAccessUserId(mirUser, reqMirId)) {
+            // No user-override... redirect
+            sessionScope.mirAfterLoginURL = request.requestURL.toString().concat("?").concat(request.queryString);
+            jsft.redirect("/mir/login.jsf");
+        }
+    } else if (viewScope.reqMirRole == null) {
+        // No reqMirRole requirement... is there a user requirement?
+        if ((reqMirId != null) &amp;&amp; !pass.canAccessUserId(mirUser, reqMirId)) {
+            // No user-override... redirect
+            sessionScope.mirAfterLoginURL = request.requestURL.toString().concat("?").concat(request.queryString);
+            jsft.redirect("/mir/login.jsf");
+        }
+    }
+</jsft:event>
+<jsft:event id="viewAs">
+    if (mirPersonId == null and mirPerson != null) {
+        mirPersonId = mirPerson.id;
+    }
+// FIXME: people is not available for mir
+//    tripUtil.infoMsg("Viewing as user ".concat(people.getPerson(mirPersonId).preferredName), "");
+    sessionScope.mirUser = mir.getUser(mirPersonId);
+</jsft:event>
+<html>
+<f:view transient="#{stateless == null ? false : stateless}">
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.85, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+    </f:facet>
+    <title>#{title}</title>
+    <ui:insert name="tracking">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-162175952-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-162175952-1');
+        </script>
+    </ui:insert>
+
+    <!-- FIXME: are both of this .js needed? -->
+    <h:outputScript name="js/layout.js" library="freya-layout" />
+    <h:outputScript name="js/prism.js" library="freya-layout" />
+    <!-- FIXME: is trip.css needed? -->
+    <h:outputStylesheet library="css" name="trip.css" />
+    <h:outputStylesheet library="css" name="site.css" />
+    <!-- FIXME: Move media css to site.css -->
+    <style type="text/css">
+        @media print {
+            @page {
+                size: 1240px 1605px;
+            }
+        }
+        body:before {
+            background:none;
+            background-color:#003F22;
+        }
+        <ui:insert name="pagecss" />
+    </style>
+    <!-- FIXME: Do we need both of these inserts? -->
+    <ui:insert name="head" />
+    <ui:insert name="pageextrahead" />
+</h:head>
+
+<h:body id="body" styleClass="ui-input-filled">
+    <!-- layout-sidebar layout-horizontal -->
+    <div class="layout-wrapper layout-topbar-#{mirDark ? 'dark' : 'light'} layout-menu-#{mirDark ? 'dark' : 'light'} layout-horizontal" >
+        <ui:include src="/WEB-INF/topbar.xhtml" />
+    <!--
+        <ui:include src="/WEB-INF/topbar.xhtml" />
+    -->
+
+       
+        <!-- FIXME: Enable right panel... probably not config? Or maybe use config to switch themes? Probably not. -->
+        <!-- <ui:include src="/WEB-INF/rightpanel.xhtml" /> -->
+        <!-- ui:include src="/WEB-INF/config.xhtml" / -->
+
+        <div class="layout-main" style="#{param.print ? 'padding-top:0px !important;' : ''}"> 
+            <div class="layout-content">
+                <h:form id="form">
+                    <p:growl id="growl" showDetail="#{hasDetail}" showSummary="true" autoUpdate="false" />
+                    <ui:insert name="content" />
+                </h:form>
+            </div>
+            <ui:insert name="footer">
+<!--                <ui:include src="/WEB-INF/footer.xhtml" /> -->
+            </ui:insert>
+        </div>
+     
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+            <f:facet name="start">
+                <i class="pi pi-spin pi-spinner ajax-loader" aria-hidden="true"></i>
+            </f:facet>
+ 
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
+        <div class="layout-mask modal-in"></div>
+    </div>
+    <h:outputStylesheet name="css/primeicons.css" library="freya-layout" />
+    <h:outputStylesheet name="css/primeflex.min.css" library="freya-layout" />
+    <h:outputStylesheet name="css/layout-#{mirDark ? 'dark' : 'light'}.css" library="freya-layout" />
+    <ui:insert name="bottom" />
+</h:body>
+</f:view>
+</html>
+</ui:composition>
+</ns>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ns xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsft="http://jsftemplating.java.net/jsft"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<ui:composition template="/WEB-INF/mainTemplate.xhtml">
+    <ui:param name="title" value="Login" />
+    <ui:param name="stateless" value="true" />
+    <ui:define name="pagecss">
+        .loginFont {
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 22px;
+            color: #BF686F;
+        }
+        .help {
+            display:none;
+        }
+        .help.error {
+            display:block;position:absolute;left:50%;z-index:3;transform:translate(-50%, -60px);
+        }
+    </ui:define>
+
+<ui:define name="mainContent">
+    <jsft:event type="initPage">
+        if (applicationScope.local == null) {
+            applicationScope.local = "true".equals(facesContext.externalContext.getContext().getServletRegistration("Faces Servlet").getInitParameter("local"));
+        }
+        hideLogin = true; // Hides the login button in the top-right
+    </jsft:event>
+    <center>
+    <h:panelGroup id="help" styleClass="loginFont help #{errorCSS}" style="float:center;">
+        <span style="color:#F34">Login Failed!<br />Try again or ask for help.</span>
+    </h:panelGroup>
+    <table style="margin-top:70px;">
+    <tr><td>
+    <div class="ui-float-label">
+        <p:inputText id="userLogin" value="#{requestScope.userLogin}" label="Last Name" size="30" />
+        <p:outputLabel for="@previous" value="Last Name"/>
+    </div>
+    </td></tr>
+    <tr><td>
+    <div class="ui-float-label" style="margin-top:10px;">
+        <p:password id="userPass" value="#{requestScope.userPass}" label="Passcode" size="30" maxlength="10" />
+        <p:outputLabel for="@previous" value="Passcode"/>
+    </div>
+    </td></tr>
+    </table>
+    <br /><br />
+    <p:commandButton value="Login" update="growl help">
+        <!-- jsft:event type="command">
+            person = tckt.login(requestScope.userLogin, requestScope.userPass);
+            if (person == null) {
+                viewScope.errorCSS = 'error';
+            } else {
+                viewScope.errorCSS = '';
+                sessionScope.tcktUser = person;
+                sessionScope.tcktAUser = person.isAdmin() ? person.id : null;
+                nextPage = sessionScope.tcktAfterLoginURL;
+                if (nextPage != null) {
+                    sessionScope.tcktAfterLoginURL = null;
+                    jsft.redirect(nextPage);
+                } else {
+                    jsft.redirect("/tckt/index.jsf?id=".concat(person.id.value));
+                }
+            }
+        </jsft:event -->
+    </p:commandButton>
+    <br />
+    <br />
+    </center>
+    
+</ui:define>
+
+</ui:composition>
+</ns>

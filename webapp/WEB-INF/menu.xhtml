@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:jsft="http://jsftemplating.java.net/jsft"
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fr="http://primefaces.org/freya">
+
+<div class="menu-wrapper">
+<!--
+    FIXME: Enable this
+
+    <div class="sidebar-logo">
+        <a href="dashboard.jsf">
+            <p:graphicImage name="images/logo-freya-single.svg" library="freya-layout" />
+        </a>
+        <a href="#" class="sidebar-pin" title="Toggle Menu">
+            <span class="pin"></span>
+        </a>
+    </div>
+    -->
+
+    <div class="layout-menu-container">
+        <fr:menu widgetVar="FreyaMenuWidget">
+            <p:menuitem id="home" value="Home" icon="pi pi-home" url="/mir" />
+            <!-- p:menuitem id="links" value="Links" icon="pi pi-link" url="/mir/links.jsf" / -->
+            <!-- p:submenu id="help" label="Help" icon="pi pi-question-circle" url="/medjugorje/about.jsf">
+                <p:menuitem id="passport" value="Passport Help" icon="pi pi-id-card" url="/passport" />
+                <p:menuitem id="insurance" value="Travel Insurance" icon="pi pi-shield" url="/insurance" />
+                <p:menuitem id="ciy" value="Catechism in a Year" icon="pi pi-calendar-plus" url="/ciy" />
+                <p:menuitem id="dm" value="Pray the Divine Mercy" icon="pi pi-plus" url="/dm" />
+                <p:menuitem id="donate" value="Donate" icon="pi pi-heart" url="https://www.paypal.com/donate/?hosted_button_id=VS83TJR79E9SS" />
+                <p:menuitem id="pay" value="Make Payment" icon="pi pi-wallet" url="/pay" />
+            </p:submenu -->
+        </fr:menu>
+    </div>
+<!-- ICONS: https://www.primefaces.org/diamond/icons.xhtml -->
+
+<!-- FIXME: Need to fix menu links -->
+</div>
+
+</ui:composition>

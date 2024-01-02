@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ns xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsft="http://jsftemplating.java.net/jsft"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<ui:composition template="template.xhtml">
+
+<ui:define name="footer" />
+<ui:define name="pagecss">
+    .layout-topbar-left, .layout-topbar-right, .menu-wrapper {
+        background-color:#121212 !important;
+    }
+    a, a:link {
+        color:#007F44 !important;
+    }
+    body .ui-card {
+        color:#005F33 !important;
+    }
+</ui:define>
+<ui:define name="content">
+    <div class="p-grid" style="max-width:1400px;margin-left:auto;margin-right:auto;">
+        <div class="p-col">
+            <p:card styleClass="card" style="min-height:480px;min-width:300px">
+                <div style="text-align:center">
+                    <h1>#{title}</h1>
+                </div>
+                <ui:insert name="mainContent" />
+            </p:card>
+        </div>
+    </div>
+</ui:define>
+</ui:composition>
+</ns>

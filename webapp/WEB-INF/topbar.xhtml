@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:jsft="http://jsftemplating.java.net/jsft"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:po="http://primefaces.org/freya">
+
+    <h:form id="topform">
+<h:outputStylesheet>
+.menuItem {
+    font-size:1.1em;
+    white-space:nowrap;
+};
+</h:outputStylesheet>
+    <div class="layout-topbar" style="#{param.print ? 'display:none;' : ''}">
+        <div class="layout-topbar-wrapper">
+            <div class="layout-topbar-left">
+                <a href="#" class="menu-button">
+                   <i class="pi pi-bars"/>
+                </a>
+                <p:link id="logolink" href="/mir/index.jsf" styleClass="layout-topbar-logo" style="height:62px">
+                    <jsft:event type="beforeEncode">
+                        sessionScope.qs = request.queryString;
+                    </jsft:event>
+                    <img src="/skyline.png" style="height:62px" />
+                </p:link>
+            </div>
+           
+            <ui:include src="/WEB-INF/menu.xhtml" />
+
+            <div class="layout-topbar-right">
+                <ul class="layout-topbar-actions">
+                <!-- TODO: if we ever enable search... or some other feature, we can reenable this:
+                    <li class="topbar-item search-item">
+                        <a href="#">
+                            <i class="topbar-icon pi pi-search"/>
+                        </a>
+                        <h:panelGroup styleClass="search-input-wrapper">
+                            <p:inputText placeholder="Search..." />
+                            <i class="pi pi-search"></i>
+                        </h:panelGroup>
+                        <ul>
+                                <h:panelGroup styleClass="search-input-wrapper">
+                                    <p:inputText placeholder="Search..." />
+                                    <i class="pi pi-search"></i>
+                                </h:panelGroup>
+                        </ul>
+                    </li>
+                -->
+                    <!-- FIXME: Turn this into how to login menu? -->
+                    <!-- FIXME: Move style to .css file -->
+                    <h:commandLink value="Login" rendered="#{hideLogin == null and mirUser.id == null}" style="font-weight:bold;font-size:1.4rem;margin-right:20px;">
+                        <jsft:event type="command">
+                            sessionScope.afterLoginURL = request.requestURL.toString().concat("?").concat(sessionScope.qs);
+                            jsft.redirect("/mir/login.jsf");
+                        </jsft:event>
+                    </h:commandLink>
+
+                    <h:panelGroup rendered="#{mirUser.id != null}">
+                        <li class="topbar-item user-profile" style="font-size:1.2em;font-weight:700;">
+                            <a href="#">Menu</a>
+                            <ul role="menu">
+<!--
+                                <li onclick="window.location='/trip/trips.jsf'"><span class="menuItem">Trips</span></li>
+                                <li onclick="window.location='/account/person.jsf?id=#{mirUser.id.value}'"><span class="menuItem">Profile</span></li>
+                                <li onclick="window.location='/trip/transactions.jsf?id=#{mirUser.id.value}'"><span class="menuItem">Balance</span></li>
+                                <li onclick="window.location='/account/setPass.jsf?id=#{mirUser.id.value}'"><span class="menuItem">Change Password</span></li>
+-->
+                            <h:panelGroup rendered="#{mirUser.isAdmin()}">
+<!--
+                                <li onclick="window.location='/admin/editPrivs.jsf'"><span class="menuItem">Edit Privileges</span></li>
+                                <li onclick="window.location='/admin/mailMerge.jsf'"><span class="menuItem">Mail People</span></li>
+                                <li onclick="window.location='/admin/editTrip.jsf'"><span class="menuItem">Add Trip</span></li>
+                                <li onclick="window.location='/admin/batchTx.jsf?type=Batch'"><span class="menuItem">Batch Tx</span></li>
+                                <li onclick="window.location='/admin/batchTx.jsf?type=Shared'"><span class="menuItem">Shared Tx</span></li>
+-->
+                            </h:panelGroup>
+<!--
+                                <li><h:commandLink value="#{dark ? 'Light Mode' : 'Dark Mode'}">
+                                        <jsft:event type="command">
+                                            sessionScope.dark = !dark;
+                                        </jsft:event>
+                                    </h:commandLink></li>
+-->
+                                <li><h:commandLink value="Logout">
+                                        <jsft:event type="command">
+                                            sessionScope.mirUser = null;
+                                            sessionScope.mirAUser = null;
+                                            sessionScope.dark = false;
+                                            jsft.redirect("/mir");
+                                        </jsft:event>
+                                    </h:commandLink></li>
+                            <h:panelGroup rendered="#{(sessionScope.mirAUser != null) and sessionScope.mirUser.isType('STUDENT')}">
+                                <li><h:commandLink id="back2Admin" value="Back to Admin" rendered="#{(sessionScope.mirUser.id != sessionScope.mirAUser)}">
+                                        <jsft:event type="command">
+                                            if (mirAUser != null) {
+                                                sessionScope.mirUser = mir.getUser(mirAUser);
+                                                tripUtil.infoMsg("Back to admin!", sessionScope.mirUser.first);
+                                                jsft.redirect(request.requestURL.toString().concat("?").concat(request.queryString));
+                                            }
+                                        </jsft:event>
+                                    </h:commandLink>
+                                </li>
+                            </h:panelGroup>
+                            </ul>
+                        </li>
+                    </h:panelGroup>
+                    <!--
+                     -->
+                </ul>
+                <!-- FIXME: This is the arrow to select the right panel, reenable if we add this! -->
+                <!--
+                <a href="#" class="layout-rightpanel-button">
+                    <i class="pi pi-arrow-left"/>
+                </a>
+                -->
+            </div>
+        </div>
+    </div>
+    </h:form>
+</ui:composition>

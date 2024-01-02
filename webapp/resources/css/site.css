@@ -1,0 +1,43 @@
+
+/*
+ * The best practice when adding your own extensions is using the scss files under the sass/overrides folder.
+ * _layout_variables and _theme_variables files allow overriding the default variables whereas _layout_styles
+ * and _theme_styles files can be used to include additional styling. This approach allows seamless updates
+ * so your changes are not overriden with the maintenance updates from PrimeTek.
+ */
+@media screen and (max-width: 714px) {
+    .sideCol { display:none; }
+}
+.sideContent {
+    text-align:center;
+    font-size:1.3rem;
+}
+/*
+body:before {
+  content: "";
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  background: url('/jakarta.faces.resource/images/rainbow-bg.jpg.jsf') no-repeat center top;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+*/
+.no-bg td {
+    background-color: #00000000 !important;
+    padding: 2px !important;
+    vertical-align: top;
+}
+.no-table-header thead th {
+    border: none !important;
+    background: none !important;
+}
+.no-table-header thead th .ui-icon {
+    display: none !important;
+}
