@@ -1,4 +1,4 @@
-package org.paulsen.trip.jsf;
+package org.paulsen.pilgrimage.jsf;
 
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.ExternalContextWrapper;

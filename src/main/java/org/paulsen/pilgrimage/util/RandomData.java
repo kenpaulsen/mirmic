@@ -1,4 +1,4 @@
-package org.paulsen.trip.util;
+package org.paulsen.pilgrimage.util;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;

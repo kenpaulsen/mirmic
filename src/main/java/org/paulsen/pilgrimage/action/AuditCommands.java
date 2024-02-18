@@ -1,9 +1,9 @@
-package org.paulsen.trip.action;
+package org.paulsen.pilgrimage.action;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
-import org.paulsen.trip.audit.Audit;
+import org.paulsen.pilgrimage.audit.Audit;
 
 @Slf4j
 @Named("audit")

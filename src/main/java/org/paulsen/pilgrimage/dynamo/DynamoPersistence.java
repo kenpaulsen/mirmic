@@ -1,4 +1,4 @@
-package org.paulsen.trip.dynamo;
+package org.paulsen.pilgrimage.dynamo;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;

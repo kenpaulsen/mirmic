@@ -1,36 +1,56 @@
-package org.paulsen.trip.dynamo;
+package org.paulsen.pilgrimage.dynamo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.paulsen.pilgrimage.model.Organization;
+import org.paulsen.pilgrimage.model.Pilgrimage;
 
 @Slf4j
 public class DAO {
     @Getter
     private final ObjectMapper mapper;
-    private final PilgrimageDAO pilgrimageDAO;
+    private final OrganizationDAO orgDao;
+    private final PilgrimageDAO pilgrimageDao;
 
     // This flag is set in the web.xml
     private static final DAO INSTANCE = new DAO();
 
     private DAO() {
-        final Persistence persistence = createTripPersistence();
+        final Persistence persistence = createPersistence();
         this.mapper = createObjectMapper();
-        this.pilgrimageDAO = new PilgrimageDAO(mapper, persistence);
+        this.pilgrimageDao = new PilgrimageDAO(mapper, persistence);
+        this.orgDao = new OrganizationDAO(mapper, persistence);
+        // FIXME: TBD? Or remove/
         //FakeData.addFakeData(personDao, tripDao);
     }
 
     public static DAO getInstance() {
         return INSTANCE;
     }
+
+    public CrudDAO<Organization> getOrgDao() {
+        return orgDao;
+    }
+    public CrudDAO<Pilgrimage> getPilgrimageDao() {
+        return pilgrimageDao;
+    }
+
+    /*
+    // Pilgrimages
+    public CompletableFuture<Boolean> savePilgrimage(final Pilgrimage pilgrimage) throws IOException {
+        return pilgrimageDao.save(pilgrimage);
+    }
+    public CompletableFuture<Optional<Pilgrimage>> getTrip(final String id) {
+        return pilgrimageDao.get(id);
+    }
+    public CompletableFuture<List<Pilgrimage>> getTrips() {
+        return pilgrimageDao.list();
+    }
+     */
 
     /* People
     public CompletableFuture<Boolean> savePerson(final Person person) throws IOException {
@@ -46,21 +66,11 @@ public class DAO {
         return personDao.getPersonByEmail(email);
     }
 
-    // Trips
-    public CompletableFuture<Boolean> saveTrip(final Trip trip) throws IOException {
-        return tripDao.saveTrip(trip);
-    }
-    public CompletableFuture<Optional<Trip>> getTrip(final String id) {
-        return tripDao.getTrip(id);
-    }
-    public CompletableFuture<List<Trip>> getTrips() {
-        return tripDao.getTrips();
-    }
     */
 
     /* Package-private for testing */
     public void clearAllCaches() {
-        pilgrimageDAO.clearCache();
+        pilgrimageDao.clearCache();
     }
 
     private ObjectMapper createObjectMapper() {
@@ -71,7 +81,7 @@ public class DAO {
         return mapper;
     }
 
-    private Persistence createTripPersistence() {
+    private Persistence createPersistence() {
         final Persistence result;
         if (FakeData.isLocal()) {
             // Local development only -- don't talk to dynamo

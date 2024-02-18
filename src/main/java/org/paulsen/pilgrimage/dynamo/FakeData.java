@@ -1,21 +1,14 @@
-package org.paulsen.trip.dynamo;
+package org.paulsen.pilgrimage.dynamo;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.ServletContext;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import lombok.Getter;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
+import org.paulsen.pilgrimage.model.Pilgrimage;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 
@@ -26,9 +19,9 @@ public class FakeData {
     /*
     @Getter
     private static final List<Person> fakePeople = initFakePeople();
-    @Getter
-    private static final List<Trip> fakeTrips = initFakeTrips();
     */
+    @Getter
+    private static final List<Pilgrimage> fakeTrips = initFakePilgrimages();
 
     public static boolean isLocal() {
         // fc will be null in a test environment that doesn't full start the server w/ JSF installed.
@@ -95,40 +88,31 @@ public class FakeData {
                 LocalDate.of(2010, 6, 1), null, "user6", null, null, null, null, null, null, null));
         return people;
     }
+    */
 
-    static List<Trip> initFakeTrips() {
-        // Trip 1
-        final List<Trip> trips = new ArrayList<>();
-        final List<Person.Id> allPeople = getFakePeople().stream().map(Person::getId).collect(Collectors.toList());
-        final List<TripEvent> events = new ArrayList<>();
-        events.add(new TripEvent("t1e2", "Hotel", "Super Duper Palace", LocalDateTime.now().plusDays(49), null, null));
-        events.add(new TripEvent("t1e1", "PDX -> EWR", "Alaska flight 54", LocalDateTime.now().plusDays(48), null, null));
-        final TripEvent charter = new TripEvent("t1e3", "SPU -> SEA", "Direct charter flight",
-                LocalDateTime.now().plusDays(60), null, null);
-        charter.getParticipants().add(allPeople.get(2));
-        charter.getParticipants().add(allPeople.get(5));
-        charter.getParticipants().add(allPeople.get(3));
-        charter.getParticipants().add(allPeople.get(0));
-        events.add(charter);
-        trips.add(new Trip("faketrip", "Spring Demo Trip", false, "desc", LocalDateTime.now().plusDays(48),
-                LocalDateTime.now().plusDays(60), allPeople, events, getDefaultOptions()));
+    static List<Pilgrimage> initFakePilgrimages() {
+        // Pilgrimage 1
+        final List<Pilgrimage> trips = new ArrayList<>();
+        trips.add(Pilgrimage.builder()
+            .id("faketrip")
+            .title("Spring Demo Trip")
+            .description("desc")
+            .startDate(LocalDateTime.now().plusDays(48))
+            .endDate(LocalDateTime.now().plusDays(60))
+            .build());
 
-        // Trip 2
-        final List<Person.Id> somePeople = getFakePeople().stream()
-                .filter(p -> !p.getLast().equals("Paulsen"))
-                .map(Person::getId)
-                .collect(Collectors.toList());
-        final List<TripEvent> events2 = new ArrayList<>();
-        events2.add(new TripEvent("t2e2", "Hotel", "Hilton", LocalDateTime.now().minusDays(4), null, null));
-        events2.add(new TripEvent("t2e1", "SEA -> LGW", "Alaska flight 255",
-                LocalDateTime.now().minusDays(5), null, null));
-        events2.add(new TripEvent("t2e3", "DBV -> KEF", "Trip for 1 to Iceland",
-                LocalDateTime.now(), null, null));
-        trips.add(new Trip("Fake2", "Summer Demo Trip", true, "Trip Description", LocalDateTime.now().minusDays(4),
-                LocalDateTime.now().plusDays(7), somePeople, events2, getDefaultOptions()));
+        // Pilgrimage 2
+        trips.add(Pilgrimage.builder()
+            .id("Fake2")
+            .title("Summer Demo Trip")
+            .description("Trip Description")
+            .startDate(LocalDateTime.now().minusDays(4))
+            .endDate(LocalDateTime.now().plusDays(7))
+            .build());
         return trips;
     }
 
+    /*
     static List<RegistrationOption> getDefaultOptions() {
         final List<RegistrationOption> result = new ArrayList<>();
         result.add(new RegistrationOption(1, "Room Preference:",
@@ -140,11 +124,11 @@ public class FakeData {
         result.add(new RegistrationOption(4, "Trip Insurance?",
                 "Price is will be paid directly to insurance company, typically $100+.", true));
         result.add(new RegistrationOption(6, "Portugal excursion?",
-                "Those interested will visit Fatima before the main trip.", true));
+                "Those interested will visit Fatima before the main pilgrimage.", true));
         result.add(new RegistrationOption(5, "Check luggage?",
                 "Will you need to check luggage?", true));
         result.add(new RegistrationOption(7, "Special Requests?",
-                "Do you have any special requests for this trip?", true));
+                "Do you have any special requests for this pilgrimage?", true));
         result.add(new RegistrationOption(8, "Agree to Terms?",
                 "Type your full name to agree.", true));
         return result;

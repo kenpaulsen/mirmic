@@ -1,4 +1,4 @@
-package org.paulsen.trip.audit;
+package org.paulsen.pilgrimage.audit;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Audit {
     private Audit() {
         // Determine log file name
         final String logDir = "logs";
-        final String auditLogFile = logDir + "/trip-audit.log";
+        final String auditLogFile = logDir + "/audit.log";
 System.out.println("Audit log file location: " + auditLogFile);
         PrintWriter pw = null;
         try {

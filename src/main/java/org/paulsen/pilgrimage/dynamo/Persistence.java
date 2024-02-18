@@ -1,4 +1,4 @@
-package org.paulsen.trip.dynamo;
+package org.paulsen.pilgrimage.dynamo;
 
 import java.util.ArrayList;
 import java.util.Collection;

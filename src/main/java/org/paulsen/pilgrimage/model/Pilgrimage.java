@@ -1,39 +1,43 @@
-package org.paulsen.trip.model;
+package org.paulsen.pilgrimage.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public final class Pilgrimage implements Serializable {
-    // FIXME: move organization to it's own entity and refer to it by id
-    private String organizationName;        // Organization Name
-    private String organizationLink;        // Link to Organization
-    private String organizationPicture;     // Organization Picture (url)
-    private String tripId;                  // Trip ID
-    private String tripPhone;               // Phone number for more information
-    private String tripEmail;               // Email for more information
-    private String tripTitle;               // Title of trip
-    private String tripPicture;             // Picture for this trip (url)
-    private String description;             // Short trip description
-    private String fullCost;                // Cost with air + ground
-    private String groundCost;              // Cost for ground-only (no air)
-    private String location;                // City where trip originates
-    private boolean otherLocationOk;        // True if other locations can join
-    private LocalDateTime startDate;        // Start of trip
-    private LocalDateTime endDate;          // End of trip
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public final class Pilgrimage implements BasicModel<Pilgrimage> {
+    @Builder.Default
+    private final String id = UUID.randomUUID().toString();                  // Trip ID
+    private String organizationId;              // Organization Name
+    private String title;                       // Title of pilgrimage
+    private String description;                 // Short pilgrimage description
+    private String picture;                     // Picture for this pilgrimage (url)
+    private String link;                        // Link for this pilgrimage (url)
+    private String phone;                       // Phone number for more information
+    private String email;                       // Email for more information
+    private String fullCost;                    // Cost with air + ground
+    private String groundCost;                  // Cost for ground-only (no air)
+    private String departureLocation;           // City where pilgrimage originates
+    private boolean otherDepartureLocationOk;   // True if other locations can join
+    private LocalDateTime startDate;            // Start of pilgrimage
+    private LocalDateTime endDate;              // End of pilgrimage
+
+    @Override
+    public Class<Pilgrimage> type() {
+        return Pilgrimage.class;
+    }
 
 /*
     @lombok.Builder(builderClassName = "Builder")
     public Pilgrimage(
             @JsonProperty("id") String id,
             @JsonProperty("title") String title,
-            @JsonProperty("openToPublic") Boolean openToPublic,
             @JsonProperty("description") String description,
             @JsonProperty("startDate") LocalDateTime startDate,
             @JsonProperty("endDate") LocalDateTime endDate,
@@ -42,7 +46,6 @@ public final class Pilgrimage implements Serializable {
             @JsonProperty("regOptions") List<RegistrationOption> regOptions) {
         this.id = id;
         this.title = title;
-        this.openToPublic = openToPublic == null || openToPublic;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -56,7 +59,7 @@ public final class Pilgrimage implements Serializable {
 
     /**
      * Returns {@code true} if the the given person can join this Trip. This requires the Person to not already be on
-     * the trip, and for the trip to not yet be started.
+     * the pilgrimage, and for the pilgrimage to not yet be started.
     public boolean canJoin(final Person.Id userId) {
         return !people.contains(userId) && startDate.isAfter(LocalDateTime.now());
     }

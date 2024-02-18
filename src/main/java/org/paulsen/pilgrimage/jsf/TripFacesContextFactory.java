@@ -1,4 +1,4 @@
-package org.paulsen.trip.jsf;
+package org.paulsen.pilgrimage.jsf;
 
 import jakarta.faces.FacesException;
 import jakarta.faces.context.FacesContext;
